@@ -38,6 +38,12 @@ terraform apply -var-file=credentials.tfvars
 - Terraform automatically creates an Ansible Inventory file called `hosts` with the created infrastructure in the directory `inventory`
 - Ansible will automatically generate an ssh config file for your bastion hosts. To connect to hosts with ssh using bastion host use generated `ssh-bastion.conf`. Ansible automatically detects bastion and changes `ssh_args`
 
+```
+eval $(ssh-agent)
+ssh-add -D
+ssh-add ~/.ssh/kube/global.pem
+```
+
 ```commandline
 ssh -F ./ssh-bastion.conf user@$ip
 ```
@@ -48,6 +54,11 @@ Example (this one assumes you are using Ubuntu)
 
 ```commandline
 ansible-playbook -i ./inventory/hosts ./cluster.yml -e ansible_user=ubuntu -b --become-user=root --flush-cache
+```
+
+Debian
+```commandline
+ansible-playbook -i ./inventory/kube-global/hosts ./cluster.yml -e ansible_user=admin -b --become-user=root --flush-cache
 ```
 
 ***Using other distrib than Ubuntu***
@@ -133,8 +144,8 @@ ssh-keyscan -H $CONTROLLER_IP >> ~/.ssh/known_hosts 2>/dev/null
 
 # Get the kubeconfig from the controller.
 mkdir -p ~/.kube
-ssh -F ssh-bastion.conf centos@$CONTROLLER_IP "sudo chmod 644 /etc/kubernetes/admin.conf"
-scp -F ssh-bastion.conf centos@$CONTROLLER_IP:/etc/kubernetes/admin.conf ~/.kube/config
+ssh -F ssh-bastion.conf admin@$CONTROLLER_IP "sudo chmod 644 /etc/kubernetes/admin.conf"
+scp -F ssh-bastion.conf admin@$CONTROLLER_IP:/etc/kubernetes/admin.conf ~/.kube/config
 sed -i "s^server:.*^server: https://$LB_HOST:6443^" ~/.kube/config
 kubectl get nodes
 ```

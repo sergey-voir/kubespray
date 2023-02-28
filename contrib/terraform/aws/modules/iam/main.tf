@@ -92,6 +92,29 @@ resource "aws_iam_role_policy" "kube-worker" {
         },
         {
           "Effect": "Allow",
+          "Action": "iam:CreateServiceLinkedRole",
+          "Resource": "*"
+        },
+        {
+          "Effect": "Allow",
+          "Action": "elasticloadbalancing:*",
+          "Resource": "*"
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "ec2:GetCoipPoolUsage",
+            "ec2:AuthorizeSecurityGroupIngress",
+            "ec2:CreateSecurityGroup",
+            "ec2:DeleteSecurityGroup",
+            "ec2:RevokeSecurityGroupIngress",
+            "ec2:CreateTags",
+            "ec2:DeleteTags"
+          ],
+          "Resource": "*"
+        },
+        {
+          "Effect": "Allow",
           "Action": "ec2:Describe*",
           "Resource": "*"
         },
@@ -113,15 +136,53 @@ resource "aws_iam_role_policy" "kube-worker" {
         {
           "Effect": "Allow",
           "Action": [
-            "ecr:GetAuthorizationToken",
             "ecr:BatchCheckLayerAvailability",
-            "ecr:GetDownloadUrlForLayer",
-            "ecr:GetRepositoryPolicy",
+            "ecr:BatchGetImage",
+            "ecr:CompleteLayerUpload",
+            "ecr:DescribeImageScanFindings",
+            "ecr:DescribeImages",
             "ecr:DescribeRepositories",
+            "ecr:GetDownloadUrlForLayer",
+            "ecr:GetLifecyclePolicy",
+            "ecr:GetLifecyclePolicyPreview",
+            "ecr:GetRepositoryPolicy",
+            "ecr:InitiateLayerUpload",
             "ecr:ListImages",
-            "ecr:BatchGetImage"
+            "ecr:ListTagsForResource",
+            "ecr:PutImage",
+            "ecr:UploadLayerPart",
+            "ecr:GetAuthorizationToken"
           ],
           "Resource": "*"
+        },
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "secretsmanager:GetSecretValue",
+            "secretsmanager:UpdateSecret"
+          ],
+          "Resource" : [
+            "arn:aws:secretsmanager:us-east-1:*:secret:pypi-*"
+          ]
+        },
+        {
+          "Action" : [
+            "s3:GetObject",
+            "s3:PutObject",
+            "s3:GetObjectAcl",
+            "s3:PutObjectAcl",
+            "s3:ListBucket",
+            "s3:GetBucketAcl",
+            "s3:PutBucketAcl",
+            "s3:GetBucketLocation",
+            "s3:DeleteObject",
+            "s3:DeleteObjectVersion"
+          ],
+          "Effect" : "Allow",
+          "Resource" : [
+            "arn:aws:s3:::wanna-pypi",
+            "arn:aws:s3:::wanna-pypi/*"
+          ]
         }
       ]
 }

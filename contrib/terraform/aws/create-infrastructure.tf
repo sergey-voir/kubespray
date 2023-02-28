@@ -3,8 +3,8 @@ terraform {
 }
 
 provider "aws" {
-  access_key = var.AWS_ACCESS_KEY_ID
-  secret_key = var.AWS_SECRET_ACCESS_KEY
+#  access_key = var.AWS_ACCESS_KEY_ID
+#  secret_key = var.AWS_SECRET_ACCESS_KEY
   region     = var.AWS_DEFAULT_REGION
 }
 
@@ -50,7 +50,8 @@ module "aws-iam" {
 */
 
 resource "aws_instance" "bastion-server" {
-  ami                         = data.aws_ami.distro.id
+  #ami                         = data.aws_ami.distro.id
+  ami                         = "ami-051e0504d259663d7"
   instance_type               = var.aws_bastion_size
   count                       = var.aws_bastion_num
   associate_public_ip_address = true
@@ -73,7 +74,8 @@ resource "aws_instance" "bastion-server" {
 */
 
 resource "aws_instance" "k8s-master" {
-  ami           = data.aws_ami.distro.id
+  #ami                         = data.aws_ami.distro.id
+  ami                         = "ami-051e0504d259663d7"
   instance_type = var.aws_kube_master_size
 
   count = var.aws_kube_master_num
@@ -103,7 +105,8 @@ resource "aws_lb_target_group_attachment" "tg-attach_master_nodes" {
 }
 
 resource "aws_instance" "k8s-etcd" {
-  ami           = data.aws_ami.distro.id
+  #ami                         = data.aws_ami.distro.id
+  ami                         = "ami-051e0504d259663d7"
   instance_type = var.aws_etcd_size
 
   count = var.aws_etcd_num
@@ -126,7 +129,8 @@ resource "aws_instance" "k8s-etcd" {
 }
 
 resource "aws_instance" "k8s-worker" {
-  ami           = data.aws_ami.distro.id
+  #ami                         = data.aws_ami.distro.id
+  ami                         = "ami-051e0504d259663d7"
   instance_type = var.aws_kube_worker_size
 
   count = var.aws_kube_worker_num
